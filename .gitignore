@@ -1,6 +1,2 @@
-
-node/.project
-
-python/.project
-
-python/.pydevproject
+.classpath
+.project
