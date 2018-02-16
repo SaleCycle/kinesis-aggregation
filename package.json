@@ -8,7 +8,7 @@
         "email": "meyersi@amazon.com"
     },
     "dependencies": {
-        "protobufjs": "5.0.1",
+        "protobufjs": "6.8.0",
         "underscore": "1.8.3"
     },
     "keywords": [
@@ -31,7 +31,7 @@
         "LICENSE.txt",
         "README.md"
     ],
-    "license" : "SEE LICENSE IN LICENSE.txt",
+    "license": "SEE LICENSE IN LICENSE.txt",
     "repository": {
         "type": "git",
         "url": "http://github.com/awslabs/kinesis-aggregation"

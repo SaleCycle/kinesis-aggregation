@@ -45,11 +45,13 @@ module.exports.deaggregate = function(kinesisRecord, computeChecksums,
 	/* jshint -W069 */// suppress warnings about dot notation (use of
 	// underscores in protobuf model)
 	//
-	// we receive the record data as a base64 encoded string
-	var recordBuffer = new Buffer(kinesisRecord.data, 'base64');
+  // we receive the record data as a base64 encoded string
+  var kinesisRecordData = JSON.parse(kinesisRecord).Data.data;
+	var recordBuffer = new Buffer(kinesisRecordData.toString(), 'base64');
 
 	// first 4 bytes are the kpl assigned magic number
-	// https://github.com/awslabs/amazon-kinesis-producer/blob/master/aggregation-format.md
+  // https://github.com/awslabs/amazon-kinesis-producer/blob/master/aggregation-format.md
+  console.log(recordBuffer.slice(0, 4).toString('hex'));
 	if (recordBuffer.slice(0, 4).toString('hex') === constants.kplConfig[constants.useKplVersion].magicNumber) {
 		try {
 			if (!AggregatedRecord) {
@@ -58,8 +60,7 @@ module.exports.deaggregate = function(kinesisRecord, computeChecksums,
 
 			// decode the protobuf binary from byte offset 4 to length-16 (last
 			// 16 are checksum)
-			var protobufMessage = AggregatedRecord.decode(recordBuffer.slice(4,
-					recordBuffer.length - 16));
+			var protobufMessage = AggregatedRecord.decode(recordBuffer.slice(4, recordBuffer.length - 16));
 
 			// extract the kinesis record checksum
 			var recordChecksum = recordBuffer.slice(recordBuffer.length - 16,
@@ -116,11 +117,11 @@ module.exports.deaggregate = function(kinesisRecord, computeChecksums,
 					afterRecordCallback(
 							e,
 							{
-								partitionKey : kinesisRecord.partitionKey,
+								partitionKey : kinesisRecord.PartitionKey,
 								explicitPartitionKey : kinesisRecord.explicitPartitionKey,
-								sequenceNumber : kinesisRecord.sequenceNumber,
+								sequenceNumber : kinesisRecord.SequenceNumber,
 								subSequenceNumber : i,
-								data : kinesisRecord.data
+								data : kinesisRecord.Data
 							});
 				}
 			}
@@ -134,19 +135,20 @@ module.exports.deaggregate = function(kinesisRecord, computeChecksums,
 		// not a KPL encoded message - no biggie - emit the record with
 		// the same interface as if it was. Customers can differentiate KPL
 		// user records vs plain Kinesis Records on the basis of the
-		// sub-sequence number
+    // sub-sequence number
+    kinesisRecord = JSON.parse(kinesisRecord);
 		if (constants.debug) {
 			console
 					.log("WARN: Non KPL Aggregated Message Processed for DeAggregation: "
-							+ kinesisRecord.partitionKey
+							+ kinesisRecord.PartitionKey
 							+ "-"
-							+ kinesisRecord.sequenceNumber);
+							+ kinesisRecord.SequenceNumber);
 		}
 		perRecordCallback(null, {
-			partitionKey : kinesisRecord.partitionKey,
+			partitionKey : kinesisRecord.PartitionKey,
 			explicitPartitionKey : kinesisRecord.explicitPartitionKey,
-			sequenceNumber : kinesisRecord.sequenceNumber,
-			data : kinesisRecord.data
+			sequenceNumber : kinesisRecord.SequenceNumber,
+			data : kinesisRecord.Data
 		});
 		afterRecordCallback();
 	}
