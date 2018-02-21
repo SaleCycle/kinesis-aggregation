@@ -8,7 +8,7 @@
         "email": "meyersi@amazon.com"
     },
     "dependencies": {
-        "protobufjs": "6.8.0",
+        "protobufjs": "5.0.2",
         "underscore": "1.8.3"
     },
     "keywords": [
