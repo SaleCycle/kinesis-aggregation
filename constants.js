@@ -13,7 +13,7 @@ module.exports = {
   useKplVersion: "0.9.0",
   kplConfig: {
   	"0.9.0": {
-  		magicNumber: "db8df5df",
+  		magicNumber: "7b22636c",
   		messageName: "AggregatedRecord"
   	}
   }

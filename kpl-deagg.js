@@ -46,13 +46,8 @@ module.exports.deaggregate = function(kinesisRecord, computeChecksums,
 	// underscores in protobuf model)
 	//
   // we receive the record data as a base64 encoded string
-  var kinesisRecordData;
-try {
-	kinesisRecordData = JSON.parse(kinesisRecord).Data.data;
-} catch(e) {
-	alert(e, kinesisRecord);
-}
-var recordBuffer = new Buffer(kinesisRecordData.toString(), 'base64');
+  var kinesisRecordData = kinesisRecord.Data
+	var recordBuffer = new Buffer(kinesisRecordData.toString(), 'base64');
 
 	// first 4 bytes are the kpl assigned magic number
   // https://github.com/awslabs/amazon-kinesis-producer/blob/master/aggregation-format.md
@@ -141,7 +136,6 @@ var recordBuffer = new Buffer(kinesisRecordData.toString(), 'base64');
 		// the same interface as if it was. Customers can differentiate KPL
 		// user records vs plain Kinesis Records on the basis of the
     // sub-sequence number
-    kinesisRecord = JSON.parse(kinesisRecord);
 		if (constants.debug) {
 			console
 					.log("WARN: Non KPL Aggregated Message Processed for DeAggregation: "
