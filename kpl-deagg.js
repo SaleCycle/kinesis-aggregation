@@ -51,7 +51,6 @@ module.exports.deaggregate = function(kinesisRecord, computeChecksums,
 
 	// first 4 bytes are the kpl assigned magic number
   // https://github.com/awslabs/amazon-kinesis-producer/blob/master/aggregation-format.md
-  console.log(recordBuffer.slice(0, 4).toString('hex'));
 	if (recordBuffer.slice(0, 4).toString('hex') === constants.kplConfig[constants.useKplVersion].magicNumber) {
 		try {
 			if (!AggregatedRecord) {
